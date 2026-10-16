@@ -1,0 +1,8 @@
+/target/
+/.settings/
+/.classpath
+/.project
+
+#IDE project configurations
+.idea
+*.iml

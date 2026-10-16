@@ -1,0 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ms-config
+  namespace: default
+  labels:
+    app: postgresql
+data:
+  CONNECTION_STRING: jdbc:postgresql://postgresql:5432/groupstelar
+  DATABASE_HOST: postgresql
+  DATABASE_PORT: '5432'
+  DB_USERNAME: admin
+  DB_PASSWORD: admin
+  KEYCLOAK_REALM: stayflex
+  KEYCLOAK_CLIENT_ID: internal-api
+  KEYCLOAK_CLIENT_SECRET: 'lt0LI3nO1Xzwl7ymq8p8GHSxjqcr30CO'
+  KEYCLOAK_AUTH-SERVER-URL: 'http://{IP_MACHINE}:8080'
+  AUTHORIZATION_SERVER_URL: 'http://{IP_MACHINE}:8080'
+  CONTEXT_PATH: user-v1

@@ -1,0 +1,47 @@
+server:
+  port: 8080
+  servlet:
+    context-path: ${CONTEXT_PATH:/payment-v1}
+
+
+spring:
+  profiles:
+    active: ${PROFILE:dev}
+  main:
+    log-startup-info: false
+  datasource:
+    url: "jdbc:oracle:thin:@${DATABASE_HOST:localhost}:${DATABASE_PORT:1521}/${DATABASE_NAME:orclpdb1}"
+    username: "${DB_USERNAME:default_user}"
+    password: "${DB_PASSWORD:default_password}"
+  jpa:
+    database: oracle
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.OracleDialect
+    show-sql: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude: env,beans
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    org.springframework.boot: INFO
+    org.springframework.boot.autoconfigure: WARN
+    org.springframework.boot.autoconfigure.logging.ConditionEvaluationReportLoggingListener: OFF
+    com.gft.elw: INFO

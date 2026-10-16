@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-config
+  namespace: keycloak-ns
+data:
+  KEYCLOAK_FRONTEND_URL: "https://stayflex.keycloak.local"
+  PROXY_ADDRESS_FORWARDING: "true"
+  KC_PROXY_HEADERS: "xforwarded"

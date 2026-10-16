@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: user
+  namespace: default
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: user
+  template: 
+    metadata: 
+      labels: 
+        app: user
+    spec: 
+      hostAliases:
+        - ip: "192.168.65.3"
+          hostnames:
+            - "stayflex.keycloak.local"
+      containers: 
+      - name: api 
+        image: tiagomedice/user-ms
+        imagePullPolicy: Always
+        envFrom: 
+        - configMapRef: 
+            name: ms-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: default
+  labels:
+    app: user-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: user

@@ -1,0 +1,85 @@
+server:
+  port: 8080
+  servlet:
+    context-path: ${CONTEXT_PATH:/user-v1}
+
+application:
+  authorization:
+    url: ${AUTHORIZATION_SERVER_URL:http://localhost:30080}
+    realm: ${KEYCLOAK_REALM:stayflex}
+    issuer-uri: ${application.authorization.url}/realms/${application.authorization.realm}
+    jwk-set-uri: ${application.authorization.url}/realms/${application.authorization.realm}/protocol/openid-connect/certs
+    token-endpoint: ${application.authorization.url}/realms/${application.authorization.realm}/protocol/openid-connect/token
+    authorization-endpoint: ${application.authorization.url}/realms/${application.authorization.realm}/protocol/openid-connect/auth
+    user-info-endpoint: ${application.authorization.url}/realms/${application.authorization.realm}/protocol/openid-connect/userinfo
+    client-id: ${KEYCLOAK_CLIENT_ID:internal-api}
+    client-secret: ${KEYCLOAK_CLIENT_SECRET:0UOQX7xk2ogeAfxrowyKJrF0jQWyCnrU}
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:DEV}
+  main:
+    log-startup-info: false
+  datasource:
+    url: ${CONNECTION_STRING:jdbc:postgresql://localhost:30432/groupstelar}
+    username: "${DB_USERNAME:admin}"
+    password: "${DB_PASSWORD:admin}"
+  jpa:
+    database: postgresql
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${application.authorization.jwk-set-uri}
+          issuer-uri: ${application.authorization.issuer-uri}
+      client:
+        registration:
+          keycloak:
+            client-id: ${application.authorization.client-id}
+            client-secret: ${application.authorization.client-secret}
+            authorization-grant-type: authorization_code
+            redirectUri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope:
+              - profile
+              - email
+        provider:
+          keycloak:
+            issuer-uri: ${application.authorization.issuer-uri}
+            authorization-uri: ${application.authorization.authorization-endpoint}
+            token-uri: ${application.authorization.token-endpoint}
+            user-info-uri: ${application.authorization.user-info-endpoint}
+            user-name-attribute: preferred_username
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+        exclude: env,beans
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+springdoc:
+  show-actuator: true
+  swagger-ui:
+    tagsSorter: alpha
+
+logging:
+  level:
+    root: INFO
+    org.springframework: WARN
+    org.springframework.boot: WARN
+    com.medici.app: INFO
