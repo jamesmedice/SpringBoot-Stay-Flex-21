@@ -10,11 +10,11 @@ spring:
   main:
     log-startup-info: false
   datasource:
-    url: "jdbc:oracle:thin:@${DATABASE_HOST:localhost}:${DATABASE_PORT:1521}/${DATABASE_NAME:orclpdb1}"
+    url: "jdbc:postgresql:thin:@${DATABASE_HOST:localhost}:${DATABASE_PORT:1521}/${DATABASE_NAME:orclpdb1}"
     username: "${DB_USERNAME:default_user}"
     password: "${DB_PASSWORD:default_password}"
   jpa:
-    database: oracle
+    database: POSTGRESQL
     generate-ddl: false
     hibernate:
       ddl-auto: none
@@ -24,7 +24,7 @@ spring:
     properties:
       hibernate:
         globally_quoted_identifiers: true
-        dialect: org.hibernate.dialect.OracleDialect
+        dialect: org.hibernate.dialect.PostgreSQL81Dialect
     show-sql: false
 management:
   endpoints:

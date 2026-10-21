@@ -52,8 +52,8 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}/deposits/acid")
-    public ResponseEntity<AccountResponse> depositBeta(@PathVariable @NotNull UUID id, @Valid @RequestBody DepositRequest request) {
-        AccountResponse response = accountService.depositWithJpa(id, request);
+    public ResponseEntity<DepositResponse> depositBeta(@PathVariable @NotNull UUID id, @Valid @RequestBody DepositRequest request) {
+        DepositResponse response = accountService.depositWithJpa(id, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

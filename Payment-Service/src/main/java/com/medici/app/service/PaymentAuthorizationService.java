@@ -13,7 +13,6 @@ import java.util.UUID;
 
 import static com.medici.app.exceptions.LogExceptionMessages.CARDHOLDER_IS_NOT_AN_ACTIVE_MEMBER_OF_THIS_ACCOUNT;
 
-
 @Service
 @RequiredArgsConstructor
 public class PaymentAuthorizationService {

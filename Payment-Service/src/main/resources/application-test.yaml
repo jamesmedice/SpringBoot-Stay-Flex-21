@@ -5,12 +5,14 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     password: admin
-    url: "jdbc:h2:mem:~/db;MODE=Oracle;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS WORKFLOW\\;CREATE SCHEMA IF NOT EXISTS FINANCE;"
+    url: "jdbc:h2:mem:~/db;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;INIT=CREATE SCHEMA IF NOT EXISTS WORKFLOW\\;CREATE SCHEMA IF NOT EXISTS FINANCE;"
     username: admin
   h2:
     console:
       enabled: true
       path: /h2
+      settings:
+        web-allow-others: true
   jackson:
     serialization.indent_output: true
   jpa:

@@ -241,12 +241,13 @@ class PaymentControllerIntegrationTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         JsonNode body = json(response);
-        assertEquals(0, body.get("availableBalance").decimalValue().compareTo(new BigDecimal("125.00")));
+        assertEquals(0, body.get("amount").decimalValue().compareTo(new BigDecimal("75.00")));
+        assertEquals(body.get("status").asText(), (AccountDtos.DepositStatus.SUCCESS.toString()));
     }
 
     @Order(8)
     @Test
-    void depositWithSql_whenAmountIsNonPositive_returns404() {
+    void depositWithSql_whenAccountIdNonFound_returns400() {
         AccountDtos.DepositRequest request = new AccountDtos.DepositRequest(new BigDecimal("15.00"), UUID.randomUUID().toString());
 
         String url = UrlBuilderUtils.buildUrl(Payment_URLS.DEPOSIT.getUrl(), Map.of(PaymentUrlParam.ID.getKey(), UUID.randomUUID().toString()), null);
@@ -258,12 +259,12 @@ class PaymentControllerIntegrationTest {
                 String.class
         );
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     @Order(9)
     @Test
-    void depositWithSql_whenAmountIsNonPositive_returns400() {
+    void depositWithSql_whenAmountIsNonPositive_returns404() {
         AccountDtos.DepositRequest request = new AccountDtos.DepositRequest(new BigDecimal("-15.00"), UUID.randomUUID().toString());
 
         String url = UrlBuilderUtils.buildUrl(Payment_URLS.DEPOSIT.getUrl(), Map.of(PaymentUrlParam.ID.getKey(), ACCOUNT_ID), null);

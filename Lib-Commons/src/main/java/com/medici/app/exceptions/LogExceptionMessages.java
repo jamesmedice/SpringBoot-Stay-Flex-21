@@ -39,6 +39,7 @@ public interface LogExceptionMessages {
     public static final String CONSENT_NOT_FOUND_BY_ACCOUNT_UUID_AND_CONSENT_CODE = "Consent not found by AccountUUID and ConsentCode. {0} {1}";
 
     public static final String ACCOUNT_NOT_FOUND = "Account not found: {0}";
+    public static final String DEPOSIT_NOT_FOUND = "Deposit not found: {0}";
 
     public static final String USER_IS_ALREADY_ASSOCIATED_WITH_THIS_ACCOUNT = "User is already associated with this account";
 

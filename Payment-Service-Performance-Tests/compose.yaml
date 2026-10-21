@@ -1,0 +1,24 @@
+
+services:
+  api:
+    image: payment-ms:1.0.0
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    restart: unless-stopped
+
+  k6:
+    image: grafana/k6:latest
+    working_dir: /scripts
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    environment:
+      BASE_URL: http://api:8080/payment-v1
+      API_PREFIX: /payment/accounts
+      ACCOUNTS_JSON: ../scripts/accounts.json
+    depends_on:
+      - api
+    profiles:
+      - test

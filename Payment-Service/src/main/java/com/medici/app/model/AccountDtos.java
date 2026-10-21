@@ -2,6 +2,7 @@ package com.medici.app.model;
 
 import com.medici.app.entity.AccountRole;
 import com.medici.app.entity.Authorization;
+import com.medici.app.entity.Deposit;
 import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
@@ -51,6 +52,15 @@ public final class AccountDtos {
             String idempotencyKey,
             DepositStatus status
     ) {
+    }
+
+    public static DepositResponse toResponse(Deposit deposit){
+        return new  DepositResponse(
+                deposit.getAccountId(),
+                deposit.getAmount(),
+                deposit.getIdempotencyKey(),
+                DepositStatus.SUCCESS
+        );
     }
 
     public record AuthorizePaymentRequest(

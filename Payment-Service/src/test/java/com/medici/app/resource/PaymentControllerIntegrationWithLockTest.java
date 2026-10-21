@@ -145,7 +145,8 @@ class PaymentControllerIntegrationWithLockTest {
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         JsonNode body = json(response);
-        assertEquals(0, body.get("availableBalance").decimalValue().compareTo(new BigDecimal("75.00")));
+        assertEquals(0, body.get("amount").decimalValue().compareTo(new BigDecimal("75.00")));
+        assertEquals( body.get("status").asText(), AccountDtos.DepositStatus.SUCCESS.name());
     }
 
     // 5. Authorization independently
