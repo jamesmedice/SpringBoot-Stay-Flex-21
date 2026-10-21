@@ -14,7 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
         org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration.class,
         org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration.class
 })
-@Profile({"test", "local"})
+@Profile({"test", "local", "perf"})
 @Configuration
 @EnableWebSecurity
 public class NoSecurityConfig {

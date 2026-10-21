@@ -31,6 +31,11 @@ Then run:
 ```bash
 python3 scripts/prepare.py
 ```
+or
+
+```bash
+docker compose run --rm prepare
+```
 
 This creates accounts, adds members, deposits funds, and writes account
 and cardholder IDs to `scripts/accounts.json`.
@@ -39,7 +44,7 @@ and cardholder IDs to `scripts/accounts.json`.
 
 ```bash
 docker compose --profile test run --rm k6 run \
-  --summary-export=/results/payments-summary.json \
+  --summary-export=/results/h2/payments-summary.json \
   /scripts/payments.js
 ```
 
@@ -48,7 +53,7 @@ Dynamically parameter of datetime
 TIMESTAMP=$(date '+%Y%m%d-%H%M%S')
 
 docker compose --profile test run --rm k6 run \
-  --summary-export="/results/payments-summary-${TIMESTAMP}.json" \
+  --summary-export="/results/h2/payments-summary-${TIMESTAMP}.json" \
   /scripts/payments.js
 ```
 
@@ -58,7 +63,7 @@ per iteration. Check that the test completes before interpreting its results.
 ## 4. Run idempotency tests
 ```bash
 docker compose --profile test run --rm k6 run \
-  --summary-export=/results/retries-summary.json \
+  --summary-export=/results/h2/retries-summary.json \
   -e RETRY_CASES=1000 \
   /scripts/retries.js
 ```
@@ -69,7 +74,7 @@ Dynamically parameter of datetime
 TIMESTAMP=$(date '+%Y%m%d-%H%M%S')
 
 docker compose --profile test run --rm k6 run \
-  --summary-export=/results/retries-summary-${TIMESTAMP}.json \
+  --summary-export=/results/h2/retries-summary-${TIMESTAMP}.json \
   -e RETRY_CASES=1000 \
   /scripts/retries.js
 ```
@@ -106,6 +111,40 @@ chmod +x run-test.sh
 ```
 
 
+## 6. Run the scenario for POSTGRESQL DB
+
+Run this once from the project root:
+
+```bash
+docker compose -f docker-compose-postgres.yml up -d
+```
+
+Run the 'prepare' of the main compose yaml 
+
+```bash
+docker compose -f docker-compose-postgres.yml --profile postgres run --rm prepare
+```
+
+Run the 'k6' of the main compose yaml
+
+```bash
+docker compose -f docker-compose-postgres.yml --profile postgres run --rm k6 run \
+  --summary-export=/results/postgres/payments-summary.json \
+  /scripts/payments.js
+```
+ 
+
+Stop running the docker images
+
+```bash
+docker compose -f docker-compose-postgres.yml down
+```
+
+Check the status of it
+
+```bash
+docker compose -f docker-compose-postgres.yml  ps
+```
 ## Notes
 
 - H2 in-memory databases are tied to the API JVM.

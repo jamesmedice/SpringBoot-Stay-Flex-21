@@ -33,7 +33,6 @@ DEPOSIT_PAYLOAD = os.getenv(
     '{"amount":10000.00,"idempotencyKey":"deposit-{{index}}-{{account_id}}"}',
 )
 
-
 def call(method, path, payload=None):
     url = BASE_URL.rstrip("/") + "/" + path.lstrip("/")
     body = None if payload is None else json.dumps(payload).encode("utf-8")

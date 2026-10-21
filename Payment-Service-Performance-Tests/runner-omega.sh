@@ -56,7 +56,7 @@ esac
 
 # Generate a unique timestamp for the summary filename.
 TIMESTAMP="$(date +%s%3N)"
-SUMMARY_FILE="results/${K6_SCRIPT%.js}-summary-${TIMESTAMP}.json"
+SUMMARY_FILE="results/h2/${K6_SCRIPT%.js}-summary-${TIMESTAMP}.json"
 
 mkdir -p results
 
@@ -69,7 +69,8 @@ echo "======================================"
 
 # Step 1: Prepare test data.
 echo "Step 1/2: Preparing test data..."
-python3 scripts/prepare.py
+
+docker compose --profile test run --rm prepare
 
 # Step 2: Run k6 against the prepared accounts.
 echo "Step 2/2: Running k6..."

@@ -11,7 +11,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Profile("!test & !local")
+//@Profile("!test & !local & !perf")
+@Profile("prod")
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true)

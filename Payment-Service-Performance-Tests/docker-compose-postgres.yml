@@ -1,0 +1,92 @@
+services:
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: finance_db
+      POSTGRES_USER: finance_user
+      POSTGRES_PASSWORD: finance_password
+    ports:
+      - "5432:5432"
+
+  api:
+    image: payment-ms:1.0.0
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: perf
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: finance_db
+      DB_USERNAME: finance_user
+      DB_PASSWORD: finance_password
+    depends_on:
+      - postgres
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://finance_user:finance_password@postgres:5432/finance_db?sslmode=disable"
+    depends_on:
+      - postgres
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - api
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - prometheus
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8081:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker:/var/lib/docker:ro
+
+#### TESTS
+
+  prepare:
+    image: python:3.12-slim
+    working_dir: /app
+    volumes:
+      - ./scripts:/app/scripts
+    environment:
+      BASE_URL: http://api:8080/payment-v1
+      API_PREFIX: /payment/accounts
+      ACCOUNTS_COUNT: 10000
+    profiles:
+      - postgres
+    command: python scripts/prepare.py
+    depends_on:
+      - api
+
+  k6:
+    image: grafana/k6:latest
+    working_dir: /scripts
+    volumes:
+      - ./scripts:/scripts:ro
+      - ./results:/results
+    environment:
+      BASE_URL: http://api:8080/payment-v1
+      API_PREFIX: /payment/accounts
+      ACCOUNTS_JSON: ../scripts/accounts.json
+    depends_on:
+      - api
+    profiles:
+      - postgres
